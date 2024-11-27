@@ -64,12 +64,16 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    //Compose
     implementation(libs.navigation.compose)
+    //Room
     implementation(libs.room.runtime)
     kapt(libs.room.compiler)
     implementation(libs.room.ktx)
+    //Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
