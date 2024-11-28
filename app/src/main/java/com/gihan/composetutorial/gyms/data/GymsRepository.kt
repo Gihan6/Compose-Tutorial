@@ -5,6 +5,7 @@ import com.gihan.composetutorial.gyms.data.RemoteDatabase.RemoteGym
 import com.gihan.composetutorial.gyms.data.localDatabase.GymsDAO
 import com.gihan.composetutorial.gyms.data.localDatabase.LocalGym
 import com.gihan.composetutorial.gyms.data.localDatabase.LocalGymFavouriteState
+import com.gihan.composetutorial.gyms.domain.Gym
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -54,5 +55,25 @@ class GymsRepository @Inject constructor(
             return@withContext database.getGyms()
 
         }
+
+     suspend fun getGymFromID(id: Int): Gym? {
+        try {
+            apiService.getGymById(id)[id.toString()]?.let {
+                return Gym(it.id, it.name, it.desc, false, it.isOpen)
+            }
+
+        } catch (e: Exception) {
+            return null
+        }
+        val localGym = database.getGym(id)
+        return Gym(
+            localGym.id,
+            localGym.name,
+            localGym.desc,
+            localGym.favourite,
+            localGym.isOpen
+        )
+
+    }
 
 }
