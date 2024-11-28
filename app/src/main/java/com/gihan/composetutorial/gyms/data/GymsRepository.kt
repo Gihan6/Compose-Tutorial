@@ -74,7 +74,6 @@ class GymsRepository @Inject constructor(
 
         }
         return null
-
     }
 
 }
