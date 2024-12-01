@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +34,7 @@ import androidx.wear.compose.material.ContentAlpha
 import androidx.wear.compose.material.LocalContentAlpha
 import com.gihan.composetutorial.R
 import com.gihan.composetutorial.gyms.domain.Gym
+import com.gihan.composetutorial.gyms.prsentation.SemanticDescription
 import com.gihan.composetutorial.ui.theme.ComposeTutorialTheme
 
 
@@ -41,6 +44,7 @@ fun GymScreen(
     onItemClick: (Int) -> Unit,
     onFavouriteClick: (Int, Boolean) -> Unit
 ) {
+
     ComposeTutorialTheme {
 
         Box(
@@ -56,13 +60,16 @@ fun GymScreen(
                     )
                 }
             }
-            if (state.isLoading) androidx.compose.material3.CircularProgressIndicator()
+            if (state.isLoading) androidx.compose.material3.CircularProgressIndicator(
+                modifier = Modifier.semantics {
+                    this.contentDescription=SemanticDescription.GYMS_LIST_LOADING
+                }
+            )
             state.error?.let { error ->
                 Text(
                     modifier = Modifier
                         .padding(8.dp)
-                        .align(Alignment.Center)
-                        .matchParentSize(),
+                        .align(Alignment.Center),
                     text = error,
                     textAlign = TextAlign.Center
                 )
@@ -96,7 +103,7 @@ fun GymItem(
             verticalAlignment = Alignment.CenterVertically,
 
             ) {
-            var favouriteIcon =
+            val favouriteIcon =
                 if (gym.favourite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
 
             GymIcon(Icons.Filled.Place, Modifier.weight(.15f), "Gym place image")
@@ -165,6 +172,6 @@ fun GymDetail(
     showBackground = true
 )
 @Composable
-fun _GymScreenPreview() {
+fun GymScreenPreview() {
 //  GymScreen()
 }

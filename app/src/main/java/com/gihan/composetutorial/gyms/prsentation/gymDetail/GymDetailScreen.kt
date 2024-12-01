@@ -12,17 +12,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.gihan.composetutorial.gyms.domain.Gym
+import com.gihan.composetutorial.gyms.prsentation.SemanticDescription
 import com.gihan.composetutorial.gyms.prsentation.gymsList.GymDetail
 import com.gihan.composetutorial.gyms.prsentation.gymsList.GymIcon
 
 @Composable
-fun GymDetailScreen( vm:GymDetailViewModel) {
-    var gymState = vm.gymDetailState
+fun GymDetailScreen(gymDetailScreenState: GymDetailScreenState) {
 
     Box(
         contentAlignment = Alignment.Center,
@@ -35,7 +34,7 @@ fun GymDetailScreen( vm:GymDetailViewModel) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            gymState.gym?.let {
+            gymDetailScreenState.gym?.let {
                 GymIcon(
                     imageVector = Icons.Filled.Place,
                     modifier = Modifier.padding(top = 52.dp, bottom = 52.dp),
@@ -54,9 +53,13 @@ fun GymDetailScreen( vm:GymDetailViewModel) {
 
         }
 
-        if (gymState.isLoading) androidx.compose.material3.CircularProgressIndicator()
+        if (gymDetailScreenState.isLoading) androidx.compose.material3.CircularProgressIndicator(
+            modifier = Modifier.semantics {
+                this.contentDescription = SemanticDescription.GYMS_LIST_LOADING
 
-        gymState.error?.let {
+            })
+
+        gymDetailScreenState.error?.let {
             Text(text = it, textAlign = TextAlign.Center)
         }
     }

@@ -63,7 +63,7 @@ fun GymsAroundApp() {
         ) {
 //            val gymId = it.arguments?.getInt("gymId")
             val vm: GymDetailViewModel = hiltViewModel()
-            GymDetailScreen(vm)
+            GymDetailScreen(vm.gymDetailState)
         }
     }
 
