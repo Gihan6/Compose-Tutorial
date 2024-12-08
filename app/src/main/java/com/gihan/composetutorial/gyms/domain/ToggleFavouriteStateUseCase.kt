@@ -10,7 +10,7 @@ class ToggleFavouriteStateUseCase @Inject constructor(
 ) {
 
 
-    suspend operator fun invoke(itemId: Int, oldState: Boolean): List<LocalGym> {
+    suspend operator fun invoke(itemId: Int, oldState: Boolean): List<Gym> {
         val newState = oldState.not()
         repository.toggleFavouriteGym(itemId, newState)
         return sortGymsUseCase()

@@ -5,18 +5,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gihan.composetutorial.gyms.data.di.MainDispatcher
 import com.gihan.composetutorial.gyms.domain.GetInitialGemsUseCase
 import com.gihan.composetutorial.gyms.domain.Gym
 import com.gihan.composetutorial.gyms.domain.ToggleFavouriteStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class GymViewModel @Inject constructor(
-   private val getInitialGymsUseCase : GetInitialGemsUseCase,
-    private val toggleFavouriteUseCase : ToggleFavouriteStateUseCase
+    private val getInitialGymsUseCase: GetInitialGemsUseCase,
+    private val toggleFavouriteUseCase: ToggleFavouriteStateUseCase,
+    @MainDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private var gymState by mutableStateOf(
@@ -44,17 +47,9 @@ class GymViewModel @Inject constructor(
     }
 
     private fun getGyms() {
-        viewModelScope.launch(errorHandle) {
+        viewModelScope.launch(errorHandle+dispatcher) {
             gymState = gymState.copy(
-                gyms = getInitialGymsUseCase().map {
-                    Gym(
-                        it.id,
-                        it.name,
-                        it.desc,
-                        it.favourite,
-                        it.isOpen
-                    )
-                },
+                gyms = getInitialGymsUseCase(),
                 isLoading = false,
                 error = null
             )
@@ -66,20 +61,12 @@ class GymViewModel @Inject constructor(
 
     fun setFavouriteGym(itemId: Int, oldValue: Boolean) {
 
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             val updatedGymsList = toggleFavouriteUseCase(
                 itemId,
                 oldValue
             )
-            gymState = gymState.copy(gyms = updatedGymsList.map {
-                Gym(
-                    it.id,
-                    it.name,
-                    it.desc,
-                    it.favourite,
-                    it.isOpen
-                )
-            })
+            gymState = gymState.copy(gyms = updatedGymsList)
         }
 
     }

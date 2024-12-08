@@ -10,7 +10,7 @@ class GetInitialGemsUseCase @Inject constructor(
 ) {
 
 
-    suspend operator fun invoke(): List<LocalGym> {
+    suspend operator fun invoke(): List<Gym> {
         gymsRepository.loadGyms()
         return getSortGymsUseCase()
     }

@@ -2,10 +2,11 @@ package com.gihan.composetutorial.gyms.data
 
 import com.gihan.composetutorial.gyms.data.RemoteDatabase.GymsApiService
 import com.gihan.composetutorial.gyms.data.RemoteDatabase.RemoteGym
+import com.gihan.composetutorial.gyms.data.di.IODispatcher
 import com.gihan.composetutorial.gyms.data.localDatabase.GymsDAO
 import com.gihan.composetutorial.gyms.data.localDatabase.LocalGym
 import com.gihan.composetutorial.gyms.data.localDatabase.LocalGymFavouriteState
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,13 +14,14 @@ import javax.inject.Singleton
 @Singleton
 class GymsRepository @Inject constructor(
     private var database: GymsDAO,
-    private var apiService: GymsApiService
+    private var apiService: GymsApiService,
+    @IODispatcher private var dispatcher: CoroutineDispatcher
 ) {
 
     private lateinit var gyms: List<RemoteGym>
 
 
-    suspend fun loadGyms() = withContext(Dispatchers.IO) {
+    suspend fun loadGyms() = withContext(dispatcher) {
         try {
             updateLocalDatabase()
         } catch (e: Exception) {
@@ -31,7 +33,7 @@ class GymsRepository @Inject constructor(
 
     }
 
-    suspend fun getGyms(): List<LocalGym> = withContext(Dispatchers.IO) {
+    suspend fun getGyms(): List<LocalGym> = withContext(dispatcher) {
         database.getGyms()
     }
 
@@ -48,7 +50,7 @@ class GymsRepository @Inject constructor(
     private suspend fun getGymsFromServer() = apiService.getGyms()
 
     suspend fun toggleFavouriteGym(gymId: Int, state: Boolean) =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
 
             database.updateGym(LocalGymFavouriteState(gymId, state))
             return@withContext database.getGyms()
