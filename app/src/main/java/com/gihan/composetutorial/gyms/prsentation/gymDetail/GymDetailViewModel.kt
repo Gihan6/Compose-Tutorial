@@ -6,8 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gihan.composetutorial.gyms.data.RemoteDatabase.GymsApiService
-import com.gihan.composetutorial.gyms.data.localDatabase.GymsDAO
+import com.gihan.composetutorial.gyms.data.GymsRepository
 import com.gihan.composetutorial.gyms.domain.Gym
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -18,8 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GymDetailViewModel @Inject constructor(
-    private val database: GymsDAO,
-    private val apiService: GymsApiService,
+    private val gymRepo: GymsRepository,
     private val stateHandel: SavedStateHandle
 ) : ViewModel() {
 
@@ -36,7 +34,7 @@ class GymDetailViewModel @Inject constructor(
     )
 
     init {
-        var gymId = stateHandel.get<Int>("gymId") ?: 0
+        val gymId = stateHandel.get<Int>("gymId") ?: 0
 
         viewModelScope.launch(errorHandler) {
             gymDetailState = gymDetailState.copy(gym = getGymByIDFromRemoteDB(gymId), false, null)
@@ -45,23 +43,10 @@ class GymDetailViewModel @Inject constructor(
     }
 
     private suspend fun getGymByIDFromRemoteDB(id: Int): Gym = withContext(Dispatchers.IO) {
-        try {
-            apiService.getGymById(id)[id.toString()]?.let {
-                return@withContext Gym(it.id, it.name, it.desc, false, it.isOpen)
-            }
-
-        } catch (e: Exception) {
+        val gym = gymRepo.getGymFromID(id)
+        if (gym != null)
+            return@withContext gym
+        else
             throw Exception("No Data Find please connect to internet")
-        }
-        val localGym = database.getGym(id)
-        return@withContext Gym(
-            localGym.id,
-            localGym.name,
-            localGym.desc,
-            localGym.favourite,
-            localGym.isOpen
-        )
-
-
     }
 }
