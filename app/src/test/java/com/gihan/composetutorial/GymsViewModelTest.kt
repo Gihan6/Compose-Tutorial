@@ -1,11 +1,6 @@
 package com.gihan.composetutorial
 
 import com.gihan.composetutorial.gyms.data.GymsRepository
-import com.gihan.composetutorial.gyms.data.RemoteDatabase.GymsApiService
-import com.gihan.composetutorial.gyms.data.RemoteDatabase.RemoteGym
-import com.gihan.composetutorial.gyms.data.localDatabase.GymsDAO
-import com.gihan.composetutorial.gyms.data.localDatabase.LocalGym
-import com.gihan.composetutorial.gyms.data.localDatabase.LocalGymFavouriteState
 import com.gihan.composetutorial.gyms.domain.GetInitialGemsUseCase
 import com.gihan.composetutorial.gyms.domain.GetSortGymsUseCase
 import com.gihan.composetutorial.gyms.domain.ToggleFavouriteStateUseCase
@@ -37,11 +32,12 @@ class GymsViewModelTest {
 
         val state = viewModel.getGymsState()
 
-        assert(state == GymsScreenState(
+        val loadedState= GymsScreenState(
             getDummyGymsData(),
             false,
             null)
-        )
+
+        assert(state ==loadedState)
     }
 
 

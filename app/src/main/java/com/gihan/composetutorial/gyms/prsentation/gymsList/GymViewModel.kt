@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gihan.composetutorial.gyms.data.di.MainDispatcher
 import com.gihan.composetutorial.gyms.domain.GetInitialGemsUseCase
-import com.gihan.composetutorial.gyms.domain.Gym
 import com.gihan.composetutorial.gyms.domain.ToggleFavouriteStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,8 +32,6 @@ class GymViewModel @Inject constructor(
     fun getGymsState(): GymsScreenState {
         return gymState
     }
-
-
     private val errorHandle = CoroutineExceptionHandler { coroutineContext, throwable ->
         throwable.printStackTrace()
         gymState = gymState.copy(isLoading = false, error = throwable.message)

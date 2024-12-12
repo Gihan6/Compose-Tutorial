@@ -23,9 +23,7 @@ fun getDummyGymsData(): List<Gym> {
     )
 
 }
-fun getDummyRemoteGym():RemoteGym{
-    return  RemoteGym(1, "gym1", "Description of gym 1",  isOpen = true)
-}
+
 
 
 class FakeDataBase : GymsDAO {
@@ -75,7 +73,10 @@ class FakeApiService : GymsApiService {
     }
 
     override suspend fun getGymById(id: Int): Map<String, RemoteGym> {
-        TODO("Not yet implemented")
+        val gyms=getDummyRemoteGymsData().filter {it.id==id }
+        val remoteGym=gyms[0]
+
+        return mapOf(id.toString() to remoteGym)
     }
 
 }

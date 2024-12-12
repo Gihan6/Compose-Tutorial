@@ -2,11 +2,12 @@ package com.gihan.composetutorial.gyms.data
 
 import com.gihan.composetutorial.gyms.data.RemoteDatabase.GymsApiService
 import com.gihan.composetutorial.gyms.data.RemoteDatabase.RemoteGym
+import com.gihan.composetutorial.gyms.data.di.IODispatcher
 import com.gihan.composetutorial.gyms.data.localDatabase.GymsDAO
 import com.gihan.composetutorial.gyms.data.localDatabase.LocalGym
 import com.gihan.composetutorial.gyms.data.localDatabase.LocalGymFavouriteState
 import com.gihan.composetutorial.gyms.domain.Gym
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
